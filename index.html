@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小聊天室練習</title>
+</head>
+<body>
+    <textarea name="" id="txtShow" cols="30" rows="10" disabled></textarea>
+    <input type="text" id="txtInput">
+    <button id="btnSend">送出</button>
+
+    <script>
+        document.addEventListener("DOMContentLoaded",event=>{
+            let keyinDom = document.querySelector('#txtInput')
+            let showDom = document.querySelector('#txtShow')
+
+            document.querySelector('#btnSend').addEventListener('click',()=>{
+                let txt = keyinDom.value;
+                ws.send(txt);
+            })
+
+            //建立WebSocket (本範例server端於本地運行)
+            let url = 'ws://localhost:3000'
+            var ws = new WebSocket(url)
+            //監聽連線
+            ws.onopen=()=>{
+                console.log('open connection')
+            }
+            ws.onclose=()=>{
+                console.log('close connection')
+            }
+            //接收Server發送的訊息
+            ws.onmessage = event =>{
+                let txt = event.data
+                if(!showDom.value) showDom.value =txt
+                else showDom.value = showDom.value + "\n" + txt
+                keyinDom.value= ""
+            }
+        })
+    </script>
+</body>
+</html>
